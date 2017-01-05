@@ -701,13 +701,13 @@ class Recompiler:
                                        'return NULL')
             prnt()
         #
-        prnt('  Py_BEGIN_ALLOW_THREADS')
+        prnt('  PyEval_SaveThread();')
         prnt('  _cffi_restore_errno();')
         call_arguments = ['x%d' % i for i in range(len(tp.args))]
         call_arguments = ', '.join(call_arguments)
         prnt('  { %s%s(%s); }' % (result_code, name, call_arguments))
         prnt('  _cffi_save_errno();')
-        prnt('  Py_END_ALLOW_THREADS')
+        prnt('  PyEval_RestoreThread(PyGILState_GetThisThreadState());')
         prnt()
         #
         prnt('  (void)self; /* unused */')
