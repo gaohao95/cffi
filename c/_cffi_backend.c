@@ -6882,7 +6882,6 @@ init_cffi_backend(void)
             INITERROR;
     }
 
-    init_cffi_tls();
     if (PyErr_Occurred())
         INITERROR;
 

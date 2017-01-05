@@ -89,45 +89,8 @@ static PyThreadState *get_current_ts(void)
 
 static PyGILState_STATE gil_ensure(void)
 {
-    /* Called at the start of a callback.  Replacement for
-       PyGILState_Ensure().
-    */
-    PyGILState_STATE result;
-    struct cffi_tls_s *tls;
-    PyThreadState *ts = PyGILState_GetThisThreadState();
-
-    if (ts != NULL) {
-        ts->gilstate_counter++;
-        if (ts != get_current_ts()) {
-            /* common case: 'ts' is our non-current thread state and
-               we have to make it current and acquire the GIL */
-            PyEval_RestoreThread(ts);
-            return PyGILState_UNLOCKED;
-        }
-        else {
-            return PyGILState_LOCKED;
-        }
-    }
-    else {
-        /* no thread state here so far. */
-        result = PyGILState_Ensure();
-        assert(result == PyGILState_UNLOCKED);
-
-        ts = PyGILState_GetThisThreadState();
-        assert(ts != NULL);
-        assert(ts == get_current_ts());
-        assert(ts->gilstate_counter >= 1);
-
-        /* Save the now-current thread state inside our 'local_thread_state'
-           field, to be removed at thread shutdown */
-        tls = get_cffi_tls();
-        if (tls != NULL) {
-            tls->local_thread_state = ts;
-            ts->gilstate_counter++;
-        }
-
-        return result;
-    }
+    /* Modified, use Python's PyGILState_Ensure */
+    return PyGILState_Ensure();
 }
 
 static void gil_release(PyGILState_STATE oldstate)
