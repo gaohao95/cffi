@@ -10,9 +10,6 @@
 */
 #ifndef _CFFI_USE_EMBEDDING
 #  include <pyconfig.h>
-#  if !defined(Py_DEBUG) && !defined(Py_TRACE_REFS) && !defined(Py_REF_DEBUG)
-#    define Py_LIMITED_API
-#  endif
 #endif
 
 #include <Python.h>
